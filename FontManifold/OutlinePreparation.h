@@ -19,20 +19,18 @@ public:
 	OutlinePreparation(std::string fontname);
 	~OutlinePreparation();
 
-//	void InitFont(char *filename);
 	void InitFont(std::string filepath);
-	//void ShowGlyphImage(int codenum, const char *goalfile);
 	Glyph GetPolyline(int codenum, int sampleNum);
-//	void ShowGlyphSamplePoints(const std::vector<Outline> *polys, IplImage *image) const;
-//	void ShowGlyphPolylines(const std::vector<Outline> *polys, IplImage *image) const;
 	IplImage* NewImage(const std::vector<Outline> *polys) const;
 	
 
 private:
 	stbtt_fontinfo fontInfo;
 	std::string fontName;
-//	Point GetLeftDownOfGlyph(const std::vector<Outline> *polys) const;
-//	Point GetRightUpOfGlyph(const std::vector<Outline> *polys) const;
 	void GetSamples(Outline *outline, stbtt_vertex P1, stbtt_vertex P2);
+	double GetLength(stbtt_vertex P1, stbtt_vertex P2);
+	Point CalculatePoint(stbtt_vertex P1, stbtt_vertex P2, double t);
+	double GetLengthOfContour(stbtt_vertex *ver, int begin, int end, std::vector<double> &len);
+	Outline SamplingOnContour(stbtt_vertex *ver, int begin, int end, double perimeter, int sampleNum);
 };
 
