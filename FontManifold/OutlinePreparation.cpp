@@ -5,8 +5,9 @@
 #include <cstdio>
 
 
-OutlinePreparation::OutlinePreparation()
+OutlinePreparation::OutlinePreparation(std::string fontname)
 {
+	fontName = fontname;
 }
 
 
@@ -16,10 +17,11 @@ OutlinePreparation::~OutlinePreparation()
 
 unsigned char buffer[8000000];
 
-void OutlinePreparation::InitFont(char *filename)
+void OutlinePreparation::InitFont(std::string filepath)
 {
+	const char *filename = filepath.data();
 	FILE *stream;
-	if ((stream = fopen("D:\\andlso.ttf", "rb")) == NULL)
+	if ((stream = fopen(filename, "rb")) == NULL)
 	{
 		return;
 	}
@@ -32,7 +34,7 @@ void OutlinePreparation::InitFont(char *filename)
 	}
 	error = 1;
 }
-
+/*
 Point OutlinePreparation::GetLeftDownOfGlyph(const std::vector<Outline> *polys) const
 {
 	bool fir = true;
@@ -71,7 +73,7 @@ Point OutlinePreparation::GetRightUpOfGlyph(const std::vector<Outline> *polys) c
 		}
 	}
 	return result;
-}
+}*/
 
 void OutlinePreparation::GetSamples(Outline *outline, stbtt_vertex P1, stbtt_vertex P2)
 {
@@ -92,7 +94,7 @@ void OutlinePreparation::GetSamples(Outline *outline, stbtt_vertex P1, stbtt_ver
 	}
 }
 
-std::vector<Outline> OutlinePreparation::GetPolyline(int codenum, int sampleNum)
+Glyph OutlinePreparation::GetPolyline(int codenum, int sampleNum)
 {
 	stbtt_vertex *vertices;
 	int glyphIndex = stbtt_FindGlyphIndex(&fontInfo, codenum);
@@ -100,12 +102,12 @@ std::vector<Outline> OutlinePreparation::GetPolyline(int codenum, int sampleNum)
 	bool incir = false;
 	Point startP;
 	Outline ot;
-	std::vector<Outline> result;
+	Glyph result(fontName);
 	for (int i = 0; i < ptsnum; ++i)
 	{
 		if (!incir)
 		{
-			startP = Point((int)vertices[i].x, (int)vertices[i].y);
+
 			incir = true;
 		}
 		else
@@ -122,7 +124,7 @@ std::vector<Outline> OutlinePreparation::GetPolyline(int codenum, int sampleNum)
 	}
 	return std::move(result);
 }
-
+/*
 void OutlinePreparation::ShowGlyphPolylines(const std::vector<Outline> *polys, IplImage *image) const
 {
 	Point ld = GetLeftDownOfGlyph(polys);
@@ -149,4 +151,4 @@ IplImage* OutlinePreparation::NewImage(const std::vector<Outline> *polys) const
 	Point ru = GetRightUpOfGlyph(polys);
 	IplImage *image = cvCreateImage(cvSize(ru.x - ld.x + 10, ru.y - ld.y + 10), 8, 3);
 	return image;
-}
+}*/

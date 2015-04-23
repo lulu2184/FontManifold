@@ -148,7 +148,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FontManager.h" />
     <ClInclude Include="Glyph.h" />
+    <ClInclude Include="Letter.h" />
     <ClInclude Include="Outline.h" />
     <ClInclude Include="OutlinePreparation.h" />
     <ClInclude Include="Point.h" />
@@ -157,8 +159,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="FontManifold.cpp" />
     <ClCompile Include="Glyph.cpp" />
+    <ClCompile Include="Letter.cpp" />
     <ClCompile Include="Outline.cpp" />
     <ClCompile Include="OutlinePreparation.cpp" />
     <ClCompile Include="Point.cpp" />

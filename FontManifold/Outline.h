@@ -22,8 +22,13 @@ public:
 	Point RightUp() const;
 	void DrawPolylines(IplImage *image, Point leftDown, Point rightUp)const;
 	void DrawPoints(IplImage *image, Point leftDown, Point rightUp)const;
+	void Normalize();
 
 private:
 	std::vector<Point> ptlist;
+	Point offset;
+	Point scale;
+
+	const static double bound;// = 100.00;
 };
 

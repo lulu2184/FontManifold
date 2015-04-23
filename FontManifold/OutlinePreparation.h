@@ -11,25 +11,28 @@
 
 #include <iostream>
 #include "Outline.h"
+#include "Glyph.h"
 
 class OutlinePreparation
 {
 public:
-	OutlinePreparation();
+	OutlinePreparation(std::string fontname);
 	~OutlinePreparation();
 
-	void InitFont(char *filename);
+//	void InitFont(char *filename);
+	void InitFont(std::string filepath);
 	//void ShowGlyphImage(int codenum, const char *goalfile);
-	std::vector<Outline> GetPolyline(int codenum, int sampleNum);
-	void ShowGlyphSamplePoints(const std::vector<Outline> *polys, IplImage *image) const;
-	void ShowGlyphPolylines(const std::vector<Outline> *polys, IplImage *image) const;
+	Glyph GetPolyline(int codenum, int sampleNum);
+//	void ShowGlyphSamplePoints(const std::vector<Outline> *polys, IplImage *image) const;
+//	void ShowGlyphPolylines(const std::vector<Outline> *polys, IplImage *image) const;
 	IplImage* NewImage(const std::vector<Outline> *polys) const;
 	
 
 private:
 	stbtt_fontinfo fontInfo;
-	Point GetLeftDownOfGlyph(const std::vector<Outline> *polys) const;
-	Point GetRightUpOfGlyph(const std::vector<Outline> *polys) const;
+	std::string fontName;
+//	Point GetLeftDownOfGlyph(const std::vector<Outline> *polys) const;
+//	Point GetRightUpOfGlyph(const std::vector<Outline> *polys) const;
 	void GetSamples(Outline *outline, stbtt_vertex P1, stbtt_vertex P2);
 };
 

@@ -39,6 +39,12 @@
     <ClInclude Include="Glyph.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="FontManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Letter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -57,6 +63,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Glyph.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FontManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Letter.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

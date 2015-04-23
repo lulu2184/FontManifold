@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Outline.h"
 
+const double Outline::bound = 500.00;
+
 Outline::Outline()
 {
 }
@@ -77,4 +79,19 @@ void Outline::DrawPoints(IplImage *image, Point leftDown, Point rightUp) const
 		pt.y = rightUp.y - pt.y;
 		cvCircle(image, pt, 10, CV_RGB(0, 0, 0));
 	}
+}
+
+void Outline::Normalize()
+{
+	Point ld = LeftDown();
+	Point ru = RightUp();
+	offset = (ru + ld) / 2;
+	ld = ld - offset;
+	ru = ru - offset;
+	scale.x = std::max(std::abs(ld.x), std::abs(ru.x)) / bound;
+	scale.y = std::max(std::abs(ld.y), std::abs(ru.y)) / bound;
+	for (auto it = ptlist.begin(); it != ptlist.end(); ++it)
+	{
+		*it = (*it - offset) / scale;
+	}	
 }

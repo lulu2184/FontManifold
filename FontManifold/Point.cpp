@@ -16,6 +16,26 @@ bool operator ==(Point a, Point b)
 	return a.x == b.x && a.y == b.y;
 }
 
+Point operator -(Point a, Point b)
+{
+	return Point(a.x - b.x, a.y - b.y);
+}
+
+Point operator /(Point a, double x)
+{
+	return Point(a.x / x, a.y / x);
+}
+
+Point operator +(Point a, Point b)
+{
+	return Point(a.x + b.x, a.y + b.y);
+}
+
+Point operator /(Point a, Point b)
+{
+	return Point(a.x / b.x, a.y / b.y);
+}
+
 Point Point::Max(Point b)const
 {
 	return Point(std::max(x, b.x), std::max(y, b.y));
