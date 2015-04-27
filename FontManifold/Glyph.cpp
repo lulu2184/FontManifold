@@ -90,10 +90,46 @@ IplImage* Glyph::NewImage() const
 	return image;
 }
 
+int Glyph::size()
+{
+	return polyline.size();
+}
+
 void Glyph::Normalize()
 {
 	for (auto it = polyline.begin(); it != polyline.end(); ++it)
 	{
 		it->Normalize();
+	}
+}
+
+void Glyph::Alignment(const Glyph &alignobj)
+{
+	if (alignobj.size() != polyline.size()) return;
+	int m = polyline.size();
+	std::vector <int> permutation;
+	std::vector <int> best_per;
+	int min_cost;
+	// initialize permutation , p[i] = i
+	best_per = permutation;
+	while ()
+	{
+		int cost = 0;
+		// permutation.next_permutation();
+		for (int i = 0; i < m; ++i)
+		{
+			Outline *o = alignobj.GetOutline(i);
+			cost += polyline[permutation[i]].align(o);
+		}
+		if (cost < min_cost)
+		{
+			min_cost = cost;
+			best_per = permutation;
+		}
+	}
+	for (int i = 0; i < m; ++i)
+	{
+		Outline *o = alignobj.GetOutline(i);
+		polyline[permutation[i]].align(o);
 	}
 }

@@ -9,6 +9,7 @@ public:
 	void Normalize();
 	void Output();
 	void SetCharacter(char ch);
+	void Alignment();
 
 private:
 	std::vector<Glyph> glyphset;

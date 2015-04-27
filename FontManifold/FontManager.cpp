@@ -46,7 +46,10 @@ void FontManager::Normalize()
 
 void FontManager::Alignment()
 {
-
+	for (auto it = letterSet.begin(); it != letterSet.end(); ++it)
+	{
+		it->Alignment();
+	}
 }
 
 void FontManager::Output()

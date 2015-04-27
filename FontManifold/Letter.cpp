@@ -28,6 +28,16 @@ void Letter::Normalize()
 	}
 }
 
+void Letter::Alignment()
+{
+	if (glyphset.size() < 2) continue;
+	auto first_font = glyphset.begin();
+	for (auto glyph_it = first_font + 1; glyph_it != glyphset.end(); ++glyph_it)
+	{
+		glyph_it->Alignment(first_font);
+	}
+}
+
 void Letter::Output()
 {
 	for (auto it = glyphset.cbegin(); it != glyphset.cend(); ++it)
