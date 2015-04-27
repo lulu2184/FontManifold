@@ -84,7 +84,7 @@ double OutlinePreparation::GetLength(stbtt_vertex P1, stbtt_vertex P2)
 		result += t3 / pow(A, 1.5) * asinh((A + B) / sqrt(t3));
 		result -= B / A * sqrt(C);
 		result -= t3 / pow(A, 1.5) * asinh(B / sqrt(t3));
-		return result;
+		return result / 2.0;
 	}
 }
 
