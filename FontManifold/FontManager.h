@@ -16,7 +16,7 @@ public:
 private:
 	const static char letterList[63];// = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 	const static int numOfLetter = 62;
-	const static int sampleNum = 1000;
+	const static int sampleNum = 300;
 
 	std::vector<Letter> letterSet;
 };

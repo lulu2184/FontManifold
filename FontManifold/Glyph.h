@@ -12,8 +12,9 @@ public:
 	void push_back(Outline outl);
 	std::string GetFontName() const;
 	void Normalize();
-	void Alignment(const Glyph &alignobj);
+	void Alignment(Glyph &alignobj);
 	int size() const;
+	Outline *GetOutline(int index);
 
 private:
 	Point LeftDown() const;

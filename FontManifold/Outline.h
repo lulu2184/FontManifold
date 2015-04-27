@@ -23,6 +23,7 @@ public:
 	void DrawPolylines(IplImage *image, Point leftDown, Point rightUp)const;
 	void DrawPoints(IplImage *image, Point leftDown, Point rightUp)const;
 	void Normalize();
+	int Alignment(Outline *std_outline);
 
 private:
 	std::vector<Point> ptlist;

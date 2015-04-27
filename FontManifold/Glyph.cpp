@@ -22,6 +22,11 @@ void Glyph::push_back(Outline outl)
 	polyline.push_back(outl);
 }
 
+Outline *Glyph::GetOutline(int index)
+{
+	return &polyline[index];
+}
+
 Point Glyph::LeftDown() const
 {
 	bool fir = true;
@@ -90,9 +95,9 @@ IplImage* Glyph::NewImage() const
 	return image;
 }
 
-int Glyph::size()
+int Glyph::size() const
 {
-	return polyline.size();
+	return (int)polyline.size();
 }
 
 void Glyph::Normalize()
@@ -103,23 +108,27 @@ void Glyph::Normalize()
 	}
 }
 
-void Glyph::Alignment(const Glyph &alignobj)
+void Glyph::Alignment(Glyph &alignobj)
 {
 	if (alignobj.size() != polyline.size()) return;
 	int m = polyline.size();
 	std::vector <int> permutation;
 	std::vector <int> best_per;
-	int min_cost;
+	int min_cost = 0xFFFFFFFF;
 	// initialize permutation , p[i] = i
+	for (int i = 0; i < m; ++i)
+	{
+		permutation.push_back(i);
+	}
 	best_per = permutation;
-	while ()
+	while (true)
 	{
 		int cost = 0;
 		// permutation.next_permutation();
 		for (int i = 0; i < m; ++i)
 		{
 			Outline *o = alignobj.GetOutline(i);
-			cost += polyline[permutation[i]].align(o);
+			cost += polyline[permutation[i]].Alignment(o);
 		}
 		if (cost < min_cost)
 		{
@@ -130,6 +139,6 @@ void Glyph::Alignment(const Glyph &alignobj)
 	for (int i = 0; i < m; ++i)
 	{
 		Outline *o = alignobj.GetOutline(i);
-		polyline[permutation[i]].align(o);
+		polyline[permutation[i]].Alignment(o);
 	}
 }

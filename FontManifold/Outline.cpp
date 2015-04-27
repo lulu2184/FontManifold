@@ -95,3 +95,8 @@ void Outline::Normalize()
 		*it = (*it - offset) / scale;
 	}	
 }
+
+int Outline::Alignment(Outline *std_outline)
+{
+	return 0;
+}

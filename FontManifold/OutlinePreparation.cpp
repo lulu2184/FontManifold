@@ -39,13 +39,14 @@ void OutlinePreparation::GetSamples(Outline *outline, stbtt_vertex P1, stbtt_ver
 {
 	for (double t = 0.0; t < 1.0; t += 0.1)
 	{
-		int x, y;
+		//int x, y;
 		outline->push_back(CalculatePoint(P1, P2, t));
 	}
 }
 
 Point OutlinePreparation::CalculatePoint(stbtt_vertex P1, stbtt_vertex P2, double t)
 {
+	int x, y;
 	if (P1.type == STBTT_vline)
 	{
 		x = P1.x * t + P2.x * (1 - t);
@@ -63,25 +64,26 @@ double OutlinePreparation::GetLength(stbtt_vertex P1, stbtt_vertex P2)
 {
 	if (P1.type == STBTT_vline)
 	{
-		return sqrt(sqr(P1.x - P2.x) + sqr(P1.y - P2.y));
+		return sqrt(pow(P1.x - P2.x, 2) + pow(P1.y - P2.y, 2));
 	}
 	else
 	{
-		double t1 = 2 * P2.x - 4 * P2.cx + 2 * P1.x;
-		double t2 = 2 * P2.cx - 2 * P1.x;
+		double t1 = 2 * P2.x - 4 * P1.cx + 2 * P1.x;
+		double t2 = 2 * P1.cx - 2 * P1.x;
 		double A = t1 * t1;
 		double B = 2 * t1 * t2;
 		double C = t2 * t2;
-		t1 = 2 * P2.y - 4 * P2.cy + 2 * P1.y;
-		t2 = 2 * P2.cy - 2 * P1.y;
+		t1 = 2 * P2.y - 4 * P1.cy + 2 * P1.y;
+		t2 = 2 * P1.cy - 2 * P1.y;
 		A += t1 * t1;
 		B += 2 * t1 * t2;
 		C += t2 * t2;
-		double t3 = A * C - B * B;
+		B /= 2;
+		double t3 = A * C - B * B + 1e-10;
 		double result = (1 + B / A) * sqrt(C + 2 * B + A);
-		result += t3 / pow(A, 1.5) * arsinh((A + B) / sqrt(t3));
+		result += t3 / pow(A, 1.5) * asinh((A + B) / sqrt(t3));
 		result -= B / A * sqrt(C);
-		result -= t3 / pow(A, 1.5) * arsinh(B / sqrt(t3));
+		result -= t3 / pow(A, 1.5) * asinh(B / sqrt(t3));
 		return result;
 	}
 }
@@ -89,7 +91,7 @@ double OutlinePreparation::GetLength(stbtt_vertex P1, stbtt_vertex P2)
 double OutlinePreparation::GetLengthOfContour(stbtt_vertex *vertices, int begin, int end, std::vector<double> &len)
 {
 	double perimeter = 0;
-	for (int i = begin; i < end; ++i)
+	for (int i = begin; i + 1 < end; ++i)
 	{
 		double l = GetLength(vertices[i + 1], vertices[i]);
 		perimeter += l;
@@ -107,20 +109,34 @@ Outline OutlinePreparation::SamplingOnContour(stbtt_vertex *vertices, int begin,
 	double nextT = 0;
 	double gap = perimeter / sampleNum;
 	int now = begin;
-	Glyph result;
-	while ()
+	Outline result;
+	while (now < end && nextT <= perimeter)
 	{
 		if (nextT > T + *len_it)
 		{
 			T += *len_it;
 			++now;
 			++len_it;
-			if (len_it == len.end()) break;
+			if (len_it == len.end() || now >= end) break;
 		}
 		double t_sig = (nextT - T) / *len_it;
-		result.push_back(CalculatePoint(vertices[i + 1], vertices[i], t_sig));
+		result.push_back(CalculatePoint(vertices[now + 1], vertices[now], t_sig));
 		nextT += gap;
 	}	
+	return std::move(result);
+}
+
+Outline OutlinePreparation::SamplingOnContourNotEvenly(stbtt_vertex *vertices, int begin, int end, int sampleNum)
+{
+	Outline result;
+	for (int i = begin; i + 1 < end; ++i)
+	{
+		double gap = 0.1;
+		for (double t = 0; t < 1.0; t += gap)
+		{
+			result.push_back(CalculatePoint(vertices[i + 1], vertices[i], t));
+		}
+	}
 	return std::move(result);
 }
 
@@ -129,28 +145,20 @@ Glyph OutlinePreparation::GetPolyline(int codenum, int sampleNum)
 	stbtt_vertex *vertices;
 	int glyphIndex = stbtt_FindGlyphIndex(&fontInfo, codenum);
 	int ptsnum = stbtt_GetGlyphShape(&fontInfo, glyphIndex, &vertices);
-	bool incir = false;
 	Point startP;
 	int begin = 0;
 	Glyph result(fontName);
 	for (int i = 0; i < ptsnum; ++i)
 	{
-		if (!incir)
+		if (vertices[i].type == STBTT_vmove)
 		{
-			incir = true;
-		}
-		else
-		{
-			Point nowPoint = Point((int)vertices[i].x, (int)vertices[i].y);
-			//GetSamples(&ot, vertices[i], vertices[i - 1]);
-			if (nowPoint == startP)
+			if (i > 0)
 			{
-				incir = false;
-				//double total_length = GetLengthOfContour(vertices, begin, i);
-				result.push_back(SamplingOnContour(vertices, begin, i, total_length, sampleNum));
-//				ot.clear();
+				result.push_back(SamplingOnContour(vertices, begin, i, sampleNum));
 			}
+			begin = i;
 		}
 	}
+	result.push_back(SamplingOnContour(vertices, begin, ptsnum, sampleNum));
 	return std::move(result);
 }
