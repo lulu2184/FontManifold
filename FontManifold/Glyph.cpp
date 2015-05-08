@@ -84,6 +84,7 @@ void Glyph::ShowSamplePoints(IplImage *image) const
 	for (auto it = polyline.cbegin(); it != polyline.cend(); ++it)
 	{
 		it->DrawPoints(image, ld, ru);
+		break;
 	}
 }
 
@@ -108,20 +109,20 @@ void Glyph::Normalize()
 	}
 }
 
-void Glyph::Alignment(Glyph &alignobj)
+double Glyph::Alignment(Glyph &alignobj)
 {
-	if (alignobj.size() != polyline.size()) return;
+	if (alignobj.size() != polyline.size()) return 1e20;
 	int m = polyline.size();
 	std::vector <int> permutation;
 	std::vector <int> best_per;
-	int min_cost = 0xFFFFFFFF;
+	double min_cost = 1e-10;
 	// initialize permutation , p[i] = i
 	for (int i = 0; i < m; ++i)
 	{
 		permutation.push_back(i);
 	}
 	best_per = permutation;
-	while (true)
+	do
 	{
 		int cost = 0;
 		// permutation.next_permutation();
@@ -135,10 +136,14 @@ void Glyph::Alignment(Glyph &alignobj)
 			min_cost = cost;
 			best_per = permutation;
 		}
-	}
+	} while (std::next_permutation(permutation.begin(), permutation.end()));
+	std::vector<Outline> new_polyline;
 	for (int i = 0; i < m; ++i)
 	{
 		Outline *o = alignobj.GetOutline(i);
 		polyline[permutation[i]].Alignment(o);
+		new_polyline.push_back(polyline[permutation[i]]);
 	}
+	polyline = std::move(new_polyline);
+	return min_cost;
 }

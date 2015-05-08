@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 
+//const char FontManager::letterList[2] = "5";
 const char FontManager::letterList[63] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
 FontManager::FontManager()

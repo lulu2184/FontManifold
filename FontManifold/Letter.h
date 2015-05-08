@@ -12,6 +12,8 @@ public:
 	void Alignment();
 
 private:
+	std::vector<std::pair<int, int> > getMST(const std::vector<std::vector<double> > &w) const;
+
 	std::vector<Glyph> glyphset;
 	char character;
 };

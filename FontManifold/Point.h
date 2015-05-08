@@ -18,6 +18,7 @@ public:
 	friend Point operator /(Point a, Point b);
 	Point Min(Point b) const;
 	Point Max(Point b) const;
+	static double dist(Point a, Point b);
 	CvPoint ToCvPoint() const;
 
 	double x, y;

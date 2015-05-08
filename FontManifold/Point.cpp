@@ -50,3 +50,7 @@ CvPoint Point::ToCvPoint() const
 {
 	return cvPoint(x, y);
 }
+
+double Point::dist(Point a, Point b){
+	return std::pow((a.x - b.x), 2) + std::pow((a.y - b.y), 2);
+}

@@ -17,6 +17,7 @@ public:
 	~Outline();
 	bool empty() const;
 	void clear();
+	int size();
 	void push_back(Point P);
 	Point LeftDown() const;
 	Point RightUp() const;
@@ -24,6 +25,7 @@ public:
 	void DrawPoints(IplImage *image, Point leftDown, Point rightUp)const;
 	void Normalize();
 	int Alignment(Outline *std_outline);
+	Point ptAt(int index);
 
 private:
 	std::vector<Point> ptlist;
@@ -31,5 +33,7 @@ private:
 	Point scale;
 
 	const static double bound;// = 100.00;
+	const static int colorNum;
+	const static CvScalar colorSet[15];
 };
 

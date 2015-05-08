@@ -3,6 +3,7 @@
 #include "OutlinePreparation.h"
 #include <cstdlib>
 #include <cstdio>
+#include <iostream>
 
 
 OutlinePreparation::OutlinePreparation(std::string fontname)
@@ -79,12 +80,22 @@ double OutlinePreparation::GetLength(stbtt_vertex P1, stbtt_vertex P2)
 		B += 2 * t1 * t2;
 		C += t2 * t2;
 		B /= 2;
-		double t3 = A * C - B * B + 1e-10;
-		double result = (1 + B / A) * sqrt(C + 2 * B + A);
-		result += t3 / pow(A, 1.5) * asinh((A + B) / sqrt(t3));
-		result -= B / A * sqrt(C);
-		result -= t3 / pow(A, 1.5) * asinh(B / sqrt(t3));
-		return result / 2.0;
+		if (fabs(A) < 1e-10){
+			if (fabs(B) < 1e-10){
+				return sqrt(C);
+			}
+			else{
+				return 2 * (pow(B + C, 1.5) - pow(C, 1.5)) / (3 * B);
+			}
+		}
+		else{
+			double t3 = A * C - B * B + 1e-10;
+			double result = (1 + B / A) * sqrt(C + 2 * B + A);
+			result += t3 / pow(A, 1.5) * asinh((A + B) / sqrt(t3));
+			result -= B / A * sqrt(C);
+			result -= t3 / pow(A, 1.5) * asinh(B / sqrt(t3));
+			return result / 2.0;
+		}
 	}
 }
 
@@ -110,7 +121,7 @@ Outline OutlinePreparation::SamplingOnContour(stbtt_vertex *vertices, int begin,
 	double gap = perimeter / sampleNum;
 	int now = begin;
 	Outline result;
-	while (now < end && nextT <= perimeter)
+	while (now < end && nextT < perimeter - 1e-7)
 	{
 		if (nextT > T + *len_it)
 		{
@@ -123,6 +134,9 @@ Outline OutlinePreparation::SamplingOnContour(stbtt_vertex *vertices, int begin,
 		result.push_back(CalculatePoint(vertices[now + 1], vertices[now], t_sig));
 		nextT += gap;
 	}	
+//	if (result.size() != sampleNum){
+//		std::cout << fontName << std::endl;
+//	}
 	return std::move(result);
 }
 
@@ -159,6 +173,8 @@ Glyph OutlinePreparation::GetPolyline(int codenum, int sampleNum)
 			begin = i;
 		}
 	}
-	result.push_back(SamplingOnContour(vertices, begin, ptsnum, sampleNum));
+	if (ptsnum - begin > 2){
+		result.push_back(SamplingOnContour(vertices, begin, ptsnum, sampleNum));
+	}
 	return std::move(result);
 }
